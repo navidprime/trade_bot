@@ -1,0 +1,11 @@
+{
+    "symbol":"BTCUSDT",
+    "screener":"CRYPTO",
+    "exchange":"COINEX",
+    "interval":"15m",
+    "strategy":"TrendStrategy",
+    "strategySetting":{"MA":"SMA20", "ADXLine":20},
+    "timeout":10,
+    "accessID":, 
+    "secretKey":
+}
