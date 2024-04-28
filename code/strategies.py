@@ -29,18 +29,19 @@ class MACDStrategy(Strategy):
         ma = indicators[self.ma]
         close = indicators["close"]
         
-        c1 = macd_macd <= 0 or macd_signal <= 0
-        c2 = macd_macd-macd_signal >= 0
-        c3 = close-ma >= 0
+        macdOrSignalLowerThanZero = macd_macd <= 0 or macd_signal <= 0
+        macdMacdHighThanSignal = macd_macd-macd_signal >= 0
+        confirmUpTrend = close-ma >= 0
         
         utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
         
-        loguru.logger.info(f"{utcTime} - criteria : {c1},{c2},{c3}")
+        loguru.logger.info(f"{utcTime} - criteria : macdOrSignalLowerThanZero:{macdOrSignalLowerThanZero},\
+            macdMacdHighThanSignal:{macdMacdHighThanSignal},confirmUpTrend:{confirmUpTrend}")
         
         action = 0
-        if c1 and c2 and c3:
+        if macdOrSignalLowerThanZero and macdMacdHighThanSignal and confirmUpTrend:
             action = 1
-        elif not c2 and not c3:
+        elif not macdMacdHighThanSignal and not confirmUpTrend:
             action = -1
         
         return action
@@ -61,20 +62,22 @@ class TrendStrategy(Strategy):
         
         close = indicators["close"]
         
-        c1 = adx >= self.adxLine
-        c2 = macd_macd >= macd_signal
-        c3 = close >= sar
-        c4 = close >= ma
+        adxSatisfied = adx >= self.adxLine
+        macdIsBuy = macd_macd >= macd_signal
+        sarSatisfied = close >= sar
+        maSatisfied = close >= ma
         
         utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
         
-        loguru.logger.info(f"{utcTime} - criteria : {c1},{c2},{c3},{c4}")
+        loguru.logger.info(f"{utcTime} - criteria :\
+            adxSatisfied:{adxSatisfied},macdIsBuy:{macdIsBuy},\
+                sarSatisfied:{sarSatisfied},maSatisfied:{maSatisfied}")
         
         action = 0
-        if (c1):
-            if (c2 and c3 and c4):
+        if (adxSatisfied):
+            if (macdIsBuy and sarSatisfied and maSatisfied):
                 action = 1
-            elif (not c2 and not c3 and not c4):
+            elif (not macdIsBuy and not sarSatisfied and not maSatisfied):
                 action = -1
         else:
             action = -1
