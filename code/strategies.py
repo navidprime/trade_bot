@@ -51,6 +51,8 @@ class TrendStrategy(Strategy):
     def init(self, config):
         self.adxLine = config["ADXLine"]
         self.ma = config["MA"]
+        
+        self.last_action = None
     def call(self, indicators: list) -> int:
         adx = indicators["ADX"]
         
@@ -75,11 +77,13 @@ class TrendStrategy(Strategy):
 \tsarSatisfied:{sarSatisfied},maSatisfied:{maSatisfied}")
         
         action = 0
-        if (adxSatisfied):
+        if (adxSatisfied or self.last_action == 1):
             if (macdIsBuy and sarSatisfied and maSatisfied):
                 action = 1
+                self.last_action = 1
             elif (not macdIsBuy and not sarSatisfied and not maSatisfied):
                 action = -1
+                self.last_action = -1
         else:
             action = -1
         
@@ -122,6 +126,7 @@ class MAADXStrategy(Strategy):
         self.maList = config["MAList"]
         self.adxline = config["ADXLine"]
     def call(self, indicators: list) -> int:
+        raise NotImplementedError() # i am not sure about this strategy if works fine or not
         adx = indicators["ADX"]
         close = indicators["close"]
         
