@@ -116,3 +116,31 @@ class BBRSIStrategy(Strategy):
             action = 1;
         
         return action
+
+class MAADXStrategy(Strategy):
+    def init(self, config):
+        self.maList = config["MAList"]
+        self.adxline = config["ADXLine"]
+    def call(self, indicators: list) -> int:
+        adx = indicators["ADX"]
+        close = indicators["close"]
+        
+        maRating = 0
+        for ma in self.maList:
+            maRating += close - indicators[ma]
+        
+        adxSatisfied = adx >= self.adxline
+        maSatisfied = maRating >= 0
+        
+        utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
+        
+        loguru.logger.info(f"{utcTime} - criteria :\n\
+\tadxSatisfied:{adxSatisfied},maRating:{maRating}")
+        
+        action = 0
+        if (adxSatisfied and maSatisfied):
+            action = 1
+        else:
+            action = -1
+        
+        return action

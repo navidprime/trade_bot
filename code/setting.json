@@ -7,6 +7,9 @@
     "strategySetting":{
         "MA":"SMA20", 
         "ADXLine":20,
+
+        "MAList":["SMA10","SMA5","EMA5","EMA10","HullMA9","VWMA","SMA20","EMA20"],
+
         "RSI":"RSI",
         "RSIOverBought":70,
         "RSIOverSold":30
