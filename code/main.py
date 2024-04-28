@@ -38,7 +38,7 @@ while tries < MAXTRIES:
                                                 market=setting["symbol"],
                                                 percentage=1
                                                 )
-            loguru.logger.info(f"{utcTime} - Action : {orderType}|Result : "+result["message"])
+            loguru.logger.info(f"{utcTime} - Action : {orderType}\n\tResult : "+result["message"])
         else:
             loguru.logger.info(f"{utcTime} - Action : neutral")
             
