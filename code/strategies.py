@@ -35,8 +35,9 @@ class MACDStrategy(Strategy):
         
         utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
         
-        loguru.logger.info(f"{utcTime} - criteria : macdOrSignalLowerThanZero:{macdOrSignalLowerThanZero},\
-            macdMacdHighThanSignal:{macdMacdHighThanSignal},confirmUpTrend:{confirmUpTrend}")
+        loguru.logger.info(f"{utcTime} - criteria :\n\
+\tmacdOrSignalLowerThanZero:{macdOrSignalLowerThanZero},macdMacdHighThanSignal:{macdMacdHighThanSignal}\n\
+\tconfirmUpTrend:{confirmUpTrend}")
         
         action = 0
         if macdOrSignalLowerThanZero and macdMacdHighThanSignal and confirmUpTrend:
@@ -69,9 +70,9 @@ class TrendStrategy(Strategy):
         
         utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
         
-        loguru.logger.info(f"{utcTime} - criteria :\
-            adxSatisfied:{adxSatisfied},macdIsBuy:{macdIsBuy},\
-                sarSatisfied:{sarSatisfied},maSatisfied:{maSatisfied}")
+        loguru.logger.info(f"{utcTime} - criteria :\n\
+\tadxSatisfied:{adxSatisfied},macdIsBuy:{macdIsBuy},\n\
+\tsarSatisfied:{sarSatisfied},maSatisfied:{maSatisfied}")
         
         action = 0
         if (adxSatisfied):
@@ -104,8 +105,9 @@ class BBRSIStrategy(Strategy):
         
         utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
         
-        loguru.logger.info(f"{utcTime} - criteria : rsiOversold:{rsiOversold},rsiOverbought:{rsiOverbought},\
-            bbOversold:{bbOversold},bbOverbought:{bbOverbought}")
+        loguru.logger.info(f"{utcTime} - criteria :\n\
+\trsiOversold:{rsiOversold},rsiOverbought:{rsiOverbought},\n\
+\tbbOversold:{bbOversold},bbOverbought:{bbOverbought}")
         
         action = 0
         if (rsiOverbought and bbOverbought):
