@@ -72,9 +72,9 @@ class TrendStrategy(Strategy):
         
         action = 0
         if (c1):
-            if (macd_macd and sar and ma):
+            if (c2 and c3 and c4):
                 action = 1
-            elif (not macd_macd and not sar and not ma):
+            elif (not c2 and not c3 and not c4):
                 action = -1
         else:
             action = -1
