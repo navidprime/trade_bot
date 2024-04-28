@@ -80,3 +80,34 @@ class TrendStrategy(Strategy):
             action = -1
         
         return action
+
+class BBRSIStrategy(Strategy):
+    def init(self, config):
+        self.rsi = config["RSI"] # RSI7 or RSI (which is 14)
+        self.rsi_overbought = config["RSIOverBought"]
+        self.rsi_oversold = config["RSIOverSold"]
+    
+    def call(self, indicators: list) -> int:
+        rsi = indicators[self.rsi]
+        bbUpper = indicators["BB.upper"]
+        bbLower = indicators["BB.lower"]
+        close = indicators["close"]
+        
+        rsiOversold = rsi <= self.rsi_oversold
+        rsiOverbought = rsi >= self.rsi_overbought
+        
+        bbOversold = close <= bbLower
+        bbOverbought = close >= bbUpper
+        
+        utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
+        
+        loguru.logger.info(f"{utcTime} - criteria : rsiOversold:{rsiOversold},rsiOverbought:{rsiOverbought},\
+            bbOversold:{bbOversold},bbOverbought:{bbOverbought}")
+        
+        action = 0
+        if (rsiOverbought and bbOverbought):
+            action = -1
+        elif (rsiOversold and bbOversold):
+            action = 1;
+        
+        return action
