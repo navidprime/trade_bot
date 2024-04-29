@@ -149,3 +149,69 @@ class MAADXStrategy(Strategy):
             action = -1
         
         return action
+
+class SuperStrategy(Strategy):
+    def init(self, config):
+        self.adxline = config["ADXLine"]
+        self.fastMA = config["FastMA"]
+        self.slowMA = config["SlowMA"]
+        self.MA2 = config["MA2"]
+    
+    def call(self, indicators: list) -> int:
+        fastma = indicators[self.fastMA]
+        slowma = indicators[self.slowMA]
+        adx = indicators["ADX"]
+        
+        macd = indicators["MACD.macd"]
+        macds = indicators["MACD.signal"]
+        sar = indicators["P.SAR"]
+        
+        close = indicators["close"]
+        
+        ma2 = indicators[self.MA2]
+        
+        cross = True if fastma > slowma else False
+        adxSatisfied = True if adx > self.adxline else False
+        
+        macdSatisfied = True if macd > macds else False
+        sarSatisfied = True if close > sar else False
+        
+        ma2Satisfied = True if close > ma2 else False
+        
+        action = 0
+        if (adxSatisfied and cross):
+            pass
+        raise NotImplementedError() # maybe later
+
+class SimpleStrategy(Strategy):
+    def init(self, config):
+        self.fastma = config["FastMA"]
+        self.slowma = config["SlowMA"]
+        self.adxline = config["ADXLine"]
+    
+    def call(self, indicators: list) -> int:
+        fast = indicators[self.fastma]
+        slow = indicators[self.slowma]
+        adx = indicators["ADX"]
+        momentum = indicators["Mom"]
+        
+        trendSatisfied = True if fast > slow else False
+        momentumSatisfied = True if momentum > 0 else False
+        adxSatisfied = True if adx > self.adxline else False
+        
+        utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
+        
+        loguru.logger.info(f"{utcTime} - criteria :\n\
+\tadxSatisfied:{adxSatisfied},trendSatisfied:{trendSatisfied},momentumSatisfied:{momentumSatisfied}")
+        
+        action = 0
+        if (adxSatisfied):
+            if (trendSatisfied and momentumSatisfied):
+                action = 1
+            elif (not trendSatisfied and not momentumSatisfied):
+                action = -1
+        else:
+            action = -1
+        
+        return action
+        

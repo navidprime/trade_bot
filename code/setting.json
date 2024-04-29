@@ -3,7 +3,7 @@
     "screener":"CRYPTO",
     "exchange":"COINEX",
     "interval":"15m",
-    "strategy":"BBRSIStrategy",
+    "strategy":"SimpleStrategy",
     "strategySetting":{
         "MA":"SMA20", 
         "ADXLine":20,
@@ -12,9 +12,12 @@
 
         "RSI":"RSI",
         "RSIOverBought":70,
-        "RSIOverSold":30
+        "RSIOverSold":30,
+
+        "FastMA":"EMA10",
+        "SlowMA":"EMA20"
     },
     "timeout":10,
-    "accessID":, 
-    "secretKey":
+    "accessID":"", 
+    "secretKey":""
 }
