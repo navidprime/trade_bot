@@ -26,6 +26,7 @@ class MACDStrategy(Strategy):
     def call(self, indicators: list) -> int:
         macd_macd = indicators["MACD.macd"]
         macd_signal = indicators["MACD.signal"]
+        
         ma = indicators[self.ma]
         close = indicators["close"]
         
@@ -47,49 +48,7 @@ class MACDStrategy(Strategy):
         
         return action
 
-class TrendStrategy(Strategy):
-    def init(self, config):
-        self.adxLine = config["ADXLine"]
-        self.ma = config["MA"]
-        
-        self.last_action = None
-    def call(self, indicators: list) -> int:
-        adx = indicators["ADX"]
-        
-        macd_macd = indicators["MACD.macd"]
-        macd_signal = indicators["MACD.signal"]
-        
-        sar = indicators["P.SAR"]
-        
-        ma = indicators[self.ma]
-        
-        close = indicators["close"]
-        
-        adxSatisfied = adx >= self.adxLine
-        macdIsBuy = macd_macd >= macd_signal
-        sarSatisfied = close >= sar
-        maSatisfied = close >= ma
-        
-        utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
-        
-        loguru.logger.info(f"{utcTime} - criteria :\n\
-\tadxSatisfied:{adxSatisfied},macdIsBuy:{macdIsBuy},\n\
-\tsarSatisfied:{sarSatisfied},maSatisfied:{maSatisfied}")
-        
-        action = 0
-        if (adxSatisfied or self.last_action == 1):
-            if (macdIsBuy and sarSatisfied and maSatisfied):
-                action = 1
-                self.last_action = 1
-            elif (not macdIsBuy and not sarSatisfied and not maSatisfied):
-                action = -1
-                self.last_action = -1
-        else:
-            action = -1
-        
-        return action
-
-class BBRSIStrategy(Strategy):
+class BRIStrategy(Strategy):
     def init(self, config):
         self.rsi = config["RSI"] # RSI7 or RSI (which is 14)
         self.rsi_overbought = config["RSIOverBought"]
@@ -121,69 +80,7 @@ class BBRSIStrategy(Strategy):
         
         return action
 
-class MAADXStrategy(Strategy):
-    def init(self, config):
-        self.maList = config["MAList"]
-        self.adxline = config["ADXLine"]
-    def call(self, indicators: list) -> int:
-        raise NotImplementedError() # i am not sure about this strategy if works fine or not
-        adx = indicators["ADX"]
-        close = indicators["close"]
-        
-        maRating = 0
-        for ma in self.maList:
-            maRating += close - indicators[ma]
-        
-        adxSatisfied = adx >= self.adxline
-        maSatisfied = maRating >= 0
-        
-        utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
-        
-        loguru.logger.info(f"{utcTime} - criteria :\n\
-\tadxSatisfied:{adxSatisfied},maRating:{maRating}")
-        
-        action = 0
-        if (adxSatisfied and maSatisfied):
-            action = 1
-        else:
-            action = -1
-        
-        return action
-
-class SuperStrategy(Strategy):
-    def init(self, config):
-        self.adxline = config["ADXLine"]
-        self.fastMA = config["FastMA"]
-        self.slowMA = config["SlowMA"]
-        self.MA2 = config["MA2"]
-    
-    def call(self, indicators: list) -> int:
-        fastma = indicators[self.fastMA]
-        slowma = indicators[self.slowMA]
-        adx = indicators["ADX"]
-        
-        macd = indicators["MACD.macd"]
-        macds = indicators["MACD.signal"]
-        sar = indicators["P.SAR"]
-        
-        close = indicators["close"]
-        
-        ma2 = indicators[self.MA2]
-        
-        cross = True if fastma > slowma else False
-        adxSatisfied = True if adx > self.adxline else False
-        
-        macdSatisfied = True if macd > macds else False
-        sarSatisfied = True if close > sar else False
-        
-        ma2Satisfied = True if close > ma2 else False
-        
-        action = 0
-        if (adxSatisfied and cross):
-            pass
-        raise NotImplementedError() # maybe later
-
-class SimpleStrategy(Strategy):
+class MAMStrategy(Strategy):
     def init(self, config):
         self.fastma = config["FastMA"]
         self.slowma = config["SlowMA"]
@@ -214,4 +111,40 @@ class SimpleStrategy(Strategy):
             action = -1
         
         return action
+
+class PoldStrategy(Strategy):
+    def init(self, config):
+        self.ma1 = config["FastMA"]
+        self.ma2 = config["SlowMA"]
+    
+    def call(self, indicators: list) -> int:
         
+        ma1 = indicators[self.ma1]
+        ma2 = indicators[self.ma2]
+        
+        macdm = indicators["MACD.macd"]
+        macds = indicators["MACD.signal"]
+        
+        sar = indicators["P.SAR"]
+        close = indicators["close"]
+        
+        trendSatisfied = ma1 >= ma2
+        macdSatisfied = macdm >= macds
+        sarSatisfied = close >= sar
+        
+        utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
+        
+        loguru.logger.info(f"{utcTime} - criteria :\n\
+\sarSatisfied:{sarSatisfied},trendSatisfied:{trendSatisfied},\n\
+macdSatisfied:{macdSatisfied}")
+        
+        action = 0 
+        if trendSatisfied:
+            if macdSatisfied and sarSatisfied:
+                action = 1
+            elif not macdSatisfied and not sarSatisfied:
+                action = -1
+        else:
+            action = -1
+        
+        return action
