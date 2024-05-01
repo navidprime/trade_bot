@@ -12,8 +12,9 @@
         "RSIOverBought":70,
         "RSIOverSold":30,
 
-        "FastMA":"EMA10",
-        "SlowMA":"EMA20"
+        "FastMA":"EMA50",
+        "SlowMA":"EMA200",
+        "MiddleMA":"VWMA"
     },
     "timeout":10,
     "accessID":"", 

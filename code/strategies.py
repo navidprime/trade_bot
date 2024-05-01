@@ -148,3 +148,37 @@ macdSatisfied:{macdSatisfied}")
             action = -1
         
         return action
+
+class PoldV2Strategy(Strategy):
+    def init(self, config):
+        self.ma1 = config["FastMA"]
+        self.ma2 = config["SlowMA"]
+        self.ma = config["MiddleMA"]
+    
+    def call(self, indicators: list) -> int:
+        
+        ma1 = indicators[self.ma1]
+        ma2 = indicators[self.ma2]
+        
+        macdm = indicators["MACD.macd"]
+        macds = indicators["MACD.signal"]
+        
+        ma = indicators[self.ma]
+        close = indicators["close"]
+        
+        trendSatisfied = ma1 >= ma2
+        maSatisfied = close >= ma
+        macdSatisfied = macdm >= macds
+        
+        utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
+        
+        loguru.logger.info(f"{utcTime} - criteria :\n\
+\maSatisfied:{maSatisfied},trendSatisfied:{trendSatisfied},macdSatisfied:{macdSatisfied}")
+        
+        action = 0 
+        if trendSatisfied and maSatisfied and macdSatisfied:
+            action = 1
+        else:
+            action = -1
+        
+        return action
