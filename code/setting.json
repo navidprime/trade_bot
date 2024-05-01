@@ -1,20 +1,21 @@
 {
-    "symbol":"BTCUSDT",
+    "symbol":"POPCATUSDT",
     "screener":"CRYPTO",
     "exchange":"COINEX",
     "interval":"15m",
-    "strategy":"SimpleStrategy",
+    "strategy":"AdvancedStrategy",
     "strategySetting":{
         "MA":"SMA20", 
         "ADXLine":20,
 
         "RSI":"RSI",
-        "RSIOverBought":70,
-        "RSIOverSold":30,
+        "RSIOverBought":80,
+        "RSIOverSold":20,
 
         "FastMA":"EMA50",
         "SlowMA":"EMA200",
-        "MiddleMA":"VWMA"
+        "ShortMA":"EMA5",
+        "LongMA":"EMA20"
     },
     "timeout":10,
     "accessID":"", 

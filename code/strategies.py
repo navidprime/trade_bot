@@ -182,3 +182,43 @@ class PoldV2Strategy(Strategy):
             action = -1
         
         return action
+
+class AdvancedStrategy(Strategy):
+    def init(self, config):
+        self.ma1 = config["FastMA"]
+        self.ma2 = config["SlowMA"]
+        self.mas1 = config["ShortMA"]
+        self.mas2 = config["LongMA"]
+        
+        self.rsi = config["RSI"]
+        self.rsiBought = config["RSIOverBought"]
+        self.rsiSold = config["RSIOverSold"]
+    
+    def call(self, indicators: list) -> int:
+        
+        ma1 = indicators[self.ma1]
+        ma2 = indicators[self.ma2]
+        
+        mas1 = indicators[self.mas1]
+        mas2 = indicators[self.mas2]
+        
+        rsi = indicators[self.rsi]
+        
+        trendSatisfied = ma1 >= ma2
+        masSatisfied = mas1 >= mas2
+        rsiBuySatisfied = rsi <= self.rsiSold
+        rsiSellSatisfied = rsi >= self.rsiBought
+        
+        utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
+        
+        loguru.logger.info(f"{utcTime} - criteria :\n\t\
+trendSatisfied:{trendSatisfied},masSatisfied:{masSatisfied},\
+\trsiBuySatisfied:{rsiBuySatisfied},rsiSellSatisfied:{rsiSellSatisfied}")
+        
+        action = 0 
+        if trendSatisfied and masSatisfied and not rsiSellSatisfied:
+            action = 1
+        else:
+            action = -1
+        
+        return action
