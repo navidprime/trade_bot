@@ -250,3 +250,37 @@ trendSatisfied:{trendSatisfied},sarSatisfied:{sarSatisfied}")
             action = -1
         
         return action
+
+class SarStochStrategy(Strategy):
+    def init(self, config):
+        self.ma1 = config["FastMA"]
+        self.ma2 = config["SlowMA"]
+    def call(self, indicators: list) -> int:
+        
+        fastm = indicators[self.ma1]
+        slowm = indicators[self.ma2]
+
+        sar = indicators["P.SAR"]
+        close = indicators["close"]
+
+        stochk = indicators["Stoch.K"]
+
+        trendSatisfied = fastm >= slowm
+        sarSatisfied = close >= sar
+        stochkSatisfied = stochk >= 50
+
+        utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
+        
+        loguru.logger.info(f"{utcTime} - criteria :\n\t\
+trendSatisfied:{trendSatisfied},sarSatisfied:{sarSatisfied},stochkSatisfied:{stochkSatisfied}")
+        
+        action = 0
+        if sarSatisfied:
+            if stochkSatisfied and sarSatisfied:
+                action = 1
+            elif not stochkSatisfied and not sarSatisfied:
+                action = -1
+        else:
+            action = -1
+        
+        return action
