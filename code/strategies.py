@@ -222,3 +222,31 @@ trendSatisfied:{trendSatisfied},masSatisfied:{masSatisfied},\
             action = -1
         
         return action
+
+class SarStrategy(Strategy):
+    def init(self, config):
+        self.ma1 = config["FastMA"]
+        self.ma2 = config["SlowMA"]
+    def call(self, indicators: list) -> int:
+        
+        fastm = indicators[self.ma1]
+        slowm = indicators[self.ma2]
+
+        sar = indicators["P.SAR"]
+        close = indicators["close"]
+
+        trendSatisfied = fastm >= slowm
+        sarSatisfied = close >= sar
+
+        utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
+        
+        loguru.logger.info(f"{utcTime} - criteria :\n\t\
+trendSatisfied:{trendSatisfied},sarSatisfied:{sarSatisfied}")
+        
+        action = 0
+        if sarSatisfied and trendSatisfied:
+            action = 1
+        else:
+            action = -1
+        
+        return action

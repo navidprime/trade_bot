@@ -3,7 +3,7 @@
     "screener":"CRYPTO",
     "exchange":"COINEX",
     "interval":"15m",
-    "strategy":"AdvancedStrategy",
+    "strategy":"SarStrategy",
     "strategySetting":{
         "MA":"SMA20", 
         "ADXLine":20,
@@ -14,10 +14,11 @@
 
         "FastMA":"EMA50",
         "SlowMA":"EMA200",
+
         "ShortMA":"EMA5",
         "LongMA":"EMA20"
     },
-    "timeout":10,
+    "timeout":5,
     "accessID":"", 
     "secretKey":""
 }
