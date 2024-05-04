@@ -64,7 +64,7 @@ class CoinexClient:
         signature = self.sign(kwargs)
         return self.post("/v1/order/market", kwargs, signature)
 
-    def place_market_order2(self, **kwargs):
+    def place_market_order_percentage(self, **kwargs):
         orderType = kwargs["type"]
         market = kwargs["market"]
         percentage = float(kwargs["percentage"])
@@ -78,6 +78,8 @@ class CoinexClient:
                 amount = float(balance["USDT"]["available"]) * percentage
             except KeyError:
                 return {"message":"no USDT"}
+            if (amount < 1):
+                return {"message":"low USDT"}
             
             return self.place_market_order(
                 market=market,
@@ -95,16 +97,3 @@ class CoinexClient:
             type="sell",
             amount=amount
         )
-        
-    def withdraw(self, **kwargs):
-        """https://viabtc.github.io/coinex_api_en_doc/spot/#docsspot002_account015_submit_withdraw"""
-        # args = {"coin_type":coin_type, "smart_contract_name":smart_contract_name,
-                # "coin_address":coin_address, "transfer_method":transfer_method, "actual_amount":actual_amount}
-        signature = self.sign(kwargs)
-        
-        return self.post("/v1/balance/coin/withdraw", kwargs, signature)
-    
-    def get_withdraw_record(self, **kwargs):
-        """https://viabtc.github.io/coinex_api_en_doc/spot/#docsspot002_account026_withdraw_list"""
-        signature = self.sign(kwargs)
-        return self.get("/v1/balance/coin/withdraw",kwargs,signature)

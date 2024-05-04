@@ -34,7 +34,7 @@ while tries < MAXTRIES:
         utcTime = datetime.datetime.now(timezone.utc).strftime("%d/%m/%Y, %H:%M:%S")
         if action != 0:
             orderType = "buy" if action==1 else "sell"
-            result = exchange.place_market_order2(type=orderType, 
+            result = exchange.place_market_order_percentage(type=orderType, 
                                                 market=setting["symbol"],
                                                 percentage=1
                                                 )

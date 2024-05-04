@@ -3,20 +3,10 @@
     "screener":"CRYPTO",
     "exchange":"COINEX",
     "interval":"15m",
-    "strategy":"SarStrategy",
+    "strategy":"MACDStrategy",
     "strategySetting":{
-        "MA":"SMA20", 
-        "ADXLine":20,
-
-        "RSI":"RSI",
-        "RSIOverBought":80,
-        "RSIOverSold":20,
-
         "FastMA":"EMA50",
-        "SlowMA":"EMA200",
-
-        "ShortMA":"EMA5",
-        "LongMA":"EMA20"
+        "SlowMA":"EMA200"
     },
     "timeout":5,
     "accessID":"", 
