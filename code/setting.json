@@ -1,5 +1,7 @@
 {
     "symbol":"POPCATUSDT",
+    "symbolList":["COINEX:BTCUSDT","COINEX:SHIBUSDT","COINEX:POPCATUSDT","COINEX:SOLAMAUSDT",
+"COINEX:WHALESUSDT","COINEX:REZUSDT"],
     "screener":"CRYPTO",
     "exchange":"COINEX",
     "interval":"15m",
