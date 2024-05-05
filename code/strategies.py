@@ -39,15 +39,14 @@ class MACDStrategy(Strategy):
         maFast = indicators[self.maFast]
         maSlow = indicators[self.maSlow]
         
-        macdOrSignalLowerZero = macdM <= 0 or macdS <= 0
         macdHigherSignal = macdM >= macdS
         marketIsUptrend = maFast >= maSlow
         
-        loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend},macdHigherSignal:{macdHigherSignal},macdOrSignalLowerZero:{macdOrSignalLowerZero}")
+        loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend},macdHigherSignal:{macdHigherSignal}")
         
         action = 0
         if marketIsUptrend:
-            if macdHigherSignal and macdOrSignalLowerZero:
+            if macdHigherSignal:
                 action = 1
             elif not macdHigherSignal:
                 action = -1
@@ -85,35 +84,22 @@ class SARStrategy(Strategy):
         
         return action
 
-# combination of MACDStrategy and SARStrategy
-class MADSAStrategy(Strategy):
+class MAStrategy(Strategy):
     def init(self, config):
         self.maFast = config["FastMA"]
         self.maSlow = config["SlowMA"]
 
     def call(self, indicators: list) -> int:
-        macdM = indicators["MACD.macd"]
-        macdS = indicators["MACD.signal"]
-        
         maFast = indicators[self.maFast]
         maSlow = indicators[self.maSlow]
-
-        sar = indicators["P.SAR"]
-        close = indicators["close"]
         
-        macdOrSignalLowerZero = macdM <= 0 or macdS <= 0
-        macdHigherSignal = macdM >= macdS
         marketIsUptrend = maFast >= maSlow
-        sarSatisfied = close >= sar
         
-        loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend},macdHigherSignal:{macdHigherSignal},macdOrSignalLowerZero:{macdOrSignalLowerZero},sarSatisfied:{sarSatisfied}")
+        loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend}")
         
         action = 0
         if marketIsUptrend:
-            if macdHigherSignal and macdOrSignalLowerZero:
-                action = 1
-            elif not sarSatisfied:
-                action = -1
+            action = 1
         else:
             action = -1
         
