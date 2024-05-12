@@ -31,6 +31,7 @@ class MACDStrategy(Strategy):
     def init(self, config):
         self.maFast = config["FastMA"]
         self.maSlow = config["SlowMA"]
+        self.useMA = config["UseMA"]
 
     def call(self, indicators: list) -> int:
         macdM = indicators["MACD.macd"]
@@ -45,7 +46,7 @@ class MACDStrategy(Strategy):
         loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend},macdHigherSignal:{macdHigherSignal}")
         
         action = 0
-        if marketIsUptrend:
+        if (marketIsUptrend or not self.useMA):
             if macdHigherSignal:
                 action = 1
             elif not macdHigherSignal:
@@ -60,6 +61,7 @@ class SARStrategy(Strategy):
     def init(self, config):
         self.maFast = config["FastMA"]
         self.maSlow = config["SlowMA"]
+        self.useMA = config["UseMA"]
 
     def call(self, indicators: list) -> int:
         maFast = indicators[self.maFast]
@@ -74,7 +76,7 @@ class SARStrategy(Strategy):
         loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend},sarSatisfied:{sarSatisfied}")
         
         action = 0
-        if marketIsUptrend:
+        if (marketIsUptrend or not self.useMA):
             if sarSatisfied:
                 action = 1
             elif not sarSatisfied:

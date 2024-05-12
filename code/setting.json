@@ -8,7 +8,8 @@
     "strategy":"MACDStrategy",
     "strategySetting":{
         "FastMA":"EMA50",
-        "SlowMA":"EMA200"
+        "SlowMA":"EMA200",
+        "UseMA":false
     },
     "timeout":5,
     "accessID":"", 
