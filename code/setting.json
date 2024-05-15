@@ -5,12 +5,10 @@
     "screener":"CRYPTO",
     "exchange":"COINEX",
     "interval":"15m",
-    "strategy":"MACDStrategy",
+    "strategy":"MSAStrategy",
     "strategySetting":{
         "FastMA":"EMA50",
-        "SlowMA":"EMA200",
-        "MA":"SMA200",
-        "UseMA":false
+        "SlowMA":"EMA200"
     },
     "timeout":5,
     "accessID":"", 

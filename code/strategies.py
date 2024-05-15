@@ -20,19 +20,10 @@ class RandomStrategy(Strategy):
             action = 1
         return action
 
-# macd and ma crossover based strategy:
-# enter trade when:
-#   - market is in a uptrend
-#   - macd(or signal) is under zero line
-#   - macd cross above the signal line
-# exit trade when:
-#   - macd crosses below signal line
 class MACDStrategy(Strategy):
     def init(self, config):
         self.maFast = config["FastMA"]
         self.maSlow = config["SlowMA"]
-        self.useMA = config["UseMA"]
-
     def call(self, indicators: list) -> int:
         macdM = indicators["MACD.macd"]
         macdS = indicators["MACD.signal"]
@@ -41,27 +32,20 @@ class MACDStrategy(Strategy):
         maSlow = indicators[self.maSlow]
         
         macdHigherSignal = macdM >= macdS
-        marketIsUptrend = maFast >= maSlow
+        marketIsUptrend = maFast >= maSlow # use same ma for not using ema crosses
         
         loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend},macdHigherSignal:{macdHigherSignal}")
         
-        action = 0
-        if (marketIsUptrend or not self.useMA):
-            if macdHigherSignal:
-                action = 1
-            elif not macdHigherSignal:
-                action = -1
-        else:
-            action = -1
+        action = -1
+        if (marketIsUptrend and macdHigherSignal):
+            action = 1
         
         return action
 
-# like MACDStrategy, but works with parabolic sar
 class SARStrategy(Strategy):
     def init(self, config):
         self.maFast = config["FastMA"]
         self.maSlow = config["SlowMA"]
-        self.useMA = config["UseMA"]
 
     def call(self, indicators: list) -> int:
         maFast = indicators[self.maFast]
@@ -75,14 +59,9 @@ class SARStrategy(Strategy):
         
         loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend},sarSatisfied:{sarSatisfied}")
         
-        action = 0
-        if (marketIsUptrend or not self.useMA):
-            if sarSatisfied:
-                action = 1
-            elif not sarSatisfied:
-                action = -1
-        else:
-            action = -1
+        action = -1
+        if (marketIsUptrend and sarSatisfied):
+            action = 1
         
         return action
 
@@ -99,17 +78,15 @@ class MAStrategy(Strategy):
         
         loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend}")
         
-        action = 0
+        action = -1
         if marketIsUptrend:
             action = 1
-        else:
-            action = -1
         
         return action
 
 class MSAStrategy(Strategy):
     def init(self, config):
-        self.ma = config["MA"]
+        self.ma = config["SlowMA"]
 
     def call(self, indicators: list) -> int:
         ma = indicators[self.ma]
@@ -126,13 +103,11 @@ class MSAStrategy(Strategy):
         
         loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend},macdIsSatisfied:{macdIsSatisfied},sarIsSatisfied:{sarIsSatisfied}")
         
-        action = 0
+        action = -1
         if marketIsUptrend:
             if macdIsSatisfied and sarIsSatisfied:
                 action = 1
             elif not macdIsSatisfied and not sarIsSatisfied:
                 action = -1
-        else:
-            action = -1
         
         return action
