@@ -106,3 +106,33 @@ class MAStrategy(Strategy):
             action = -1
         
         return action
+
+class MSAStrategy(Strategy):
+    def init(self, config):
+        self.ma = config["MA"]
+
+    def call(self, indicators: list) -> int:
+        ma = indicators[self.ma]
+        close = indicators["close"]
+
+        macdM = indicators["MACD.macd"]
+        macdS = indicators["MACD.signal"]
+
+        sar = indicators["P.SAR"]
+        
+        marketIsUptrend = close >= ma
+        macdIsSatisfied = macdM >= macdS
+        sarIsSatisfied = close >= sar 
+        
+        loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend},macdIsSatisfied:{macdIsSatisfied},sarIsSatisfied:{sarIsSatisfied}")
+        
+        action = 0
+        if marketIsUptrend:
+            if macdIsSatisfied and sarIsSatisfied:
+                action = 1
+            elif not macdIsSatisfied and not sarIsSatisfied:
+                action = -1
+        else:
+            action = -1
+        
+        return action

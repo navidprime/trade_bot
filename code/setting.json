@@ -9,6 +9,7 @@
     "strategySetting":{
         "FastMA":"EMA50",
         "SlowMA":"EMA200",
+        "MA":"SMA200",
         "UseMA":false
     },
     "timeout":5,
