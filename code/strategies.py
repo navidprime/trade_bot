@@ -24,6 +24,7 @@ class MACDStrategy(Strategy):
     def init(self, config):
         self.maFast = config["FastMA"]
         self.maSlow = config["SlowMA"]
+        self.enterBelowZero = config["EnterBelowZero"]
     def call(self, indicators: list) -> int:
         macdM = indicators["MACD.macd"]
         macdS = indicators["MACD.signal"]
@@ -32,13 +33,19 @@ class MACDStrategy(Strategy):
         maSlow = indicators[self.maSlow]
         
         macdHigherSignal = macdM >= macdS
-        marketIsUptrend = maFast >= maSlow # use same ma for not using ema crosses
-        
-        loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend},macdHigherSignal:{macdHigherSignal}")
+        macdBelowZero = macdM <= 0 or macdS <= 0
+        marketIsUptrend = maFast >= maSlow # use same ma for not using ema crosses, also you can use close if wana see candle is above the long ma
+
+        loguru.logger.info(f"---- Criteria -> marketIsUptrend:{marketIsUptrend},macdBelowZero:{macdBelowZero},macdHigherSignal:{macdHigherSignal}")
         
         action = -1
-        if (marketIsUptrend and macdHigherSignal):
-            action = 1
+        if marketIsUptrend:
+            if (macdHigherSignal and (macdBelowZero or not self.enterBelowZero)):
+                action = 1
+            elif (not macdHigherSignal):
+                action = -1
+            else:
+                action = 0
         
         return action
 

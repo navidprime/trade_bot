@@ -22,6 +22,8 @@ def ParseInterval(interval)-> float:
         return 60*60
     elif(interval=="4h"):
         return 4*60*60
+    elif(interval=="1d"):
+        return 24*60*60
     raise Exception()
 
 def GetSleepTime(seconds:float) -> float:
