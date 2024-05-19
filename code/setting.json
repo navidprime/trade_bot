@@ -10,7 +10,7 @@
     "strategy":"MAStrategy",
     "strategySetting":{
         "MA1":"close",
-        "MA2":"PSAR"
+        "MA2":"P.SAR"
     },
 
     "timeout":5,
