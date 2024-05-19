@@ -3,23 +3,33 @@ from tradingview_ta import *
 
 setting = ReadSetting()
 
+timeout = setting["timeout"]
 timeframe = setting["interval"]
 exchange = setting["exchange"]
 symbolList = setting["symbolList"]
+propertyList = setting["propertyList"]
 
-analysis = get_multiple_analysis("CRYPTO", timeframe, symbolList, ["ROC", "average_volume_10d_calc"])
+print("fetching analysis objects....")
+while True:
+    try:
+        analysis = get_multiple_analysis("CRYPTO", timeframe, symbolList, propertyList,timeout)
+        break;
+    except Exception as e:
+        print("error raised." + e)
+print("received analysis objects.")
 
-symbol_perf = {}
+symbolPerf:dict[str, dict] = {}
 for symbol,ana in analysis.items():
-    maRec = ana.indicators["Recommend.MA"]
-    oscRec = ana.indicators["Recommend.Other"]
-    sumRec = ana.indicators["Recommend.All"]
-    symbol_perf[symbol] = (oscRec,maRec,sumRec, ana.indicators["ROC"],ana.indicators["average_volume_10d_calc"]*ana.indicators["close"])
+    symbolPerf[symbol] = dict()
+    indicators = ana.indicators
+    for property in propertyList:
+        symbolPerf[symbol][property] = indicators[property]
 
-sorted_sp = dict(
-    sorted(symbol_perf.items(),
-           key=lambda item:item[1][2])
+sortedSymbolPerf = dict(
+    sorted(symbolPerf.items(),
+           key=lambda item:item[1][propertyList[0]]*-1)
 )
-print(f'{"SYMBOL":<30} {"OSCILLATORS":<20} {"MA":<20} {"SUMMARY":<20} {"ROC(9)":<20} {"Vol10d*Close":<20}')
-for symbol, recs in sorted_sp.items():
-    print(f'{symbol:<30} {round(recs[0],2):<20} {round(recs[1],2):<20} {round(recs[2],2):<20} {round(recs[3],2):<20} {round(recs[4],2):<20}')
+for (coinName, properties) in sortedSymbolPerf.items():
+    print(coinName)
+    for (property, value) in properties.items():
+        print(f"\t{property}:{value}")

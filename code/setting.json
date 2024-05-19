@@ -1,17 +1,20 @@
 {
-    "symbol":"POPCATUSDT",
-    "symbolList":["COINEX:BTCUSDT","COINEX:SHIBUSDT","COINEX:POPCATUSDT","COINEX:SOLAMAUSDT",
-"COINEX:WHALESUSDT","COINEX:REZUSDT"],
+    "symbolList":["COINEX:BTCUSDT","COINEX:SHIBUSDT","COINEX:ETHUSDT"],
+    "propertyList":["Recommend.All", "close", "volume","SMA20"], 
+
+    "symbol":"BTCUSDT",
     "screener":"CRYPTO",
     "exchange":"COINEX",
     "interval":"15m",
-    "strategy":"MACDStrategy",
+
+    "strategy":"MAStrategy",
     "strategySetting":{
         "FastMA":"close",
-        "SlowMA":"EMA200",
-        "EnterBelowZero":true
+        "SlowMA":"PSAR"
     },
+
     "timeout":5,
+
     "accessID":"", 
     "secretKey":""
 }
