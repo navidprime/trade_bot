@@ -9,8 +9,8 @@
 
     "strategy":"MAStrategy",
     "strategySetting":{
-        "FastMA":"close",
-        "SlowMA":"PSAR"
+        "MA1":"close",
+        "MA2":"PSAR"
     },
 
     "timeout":5,
